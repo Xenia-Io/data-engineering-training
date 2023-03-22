@@ -12,7 +12,6 @@ import os
 
 
 def main(params):
-    print("Started........")
     user = params.user
 
     password = params.password
@@ -34,7 +33,6 @@ def main(params):
     print("Debug:", csv_name)
     try:
         os.system(f"wget {url} -O {csv_name}")
-        # os.system(f"wget {url} -O {csv_name}")
     except SyntaxError as e:
         print(e)
 
