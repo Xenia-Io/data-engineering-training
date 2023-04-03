@@ -11,10 +11,10 @@ def fetch(dataset_url: str) -> pd.DataFrame:
     return df
 
 @task(log_prints=True)
-def clean(df=pd.DataFrame) -> pd.DataFrame:
+def clean(df: pd.DataFrame, column_1: str, column_2: str) -> pd.DataFrame:
     """Fix Data Type issues"""
-    df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
-    df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
+    df[column_1] = pd.to_datetime(df[column_1])
+    df[column_2] = pd.to_datetime(df[column_2])
     print(df.head(2))
     print(f"Columns: {df.dtypes}")
     print(f"Rows: {len(df)}")
@@ -44,14 +44,20 @@ def write_gcs(path: Path) -> None:
 @flow()
 def etl_web_to_gcs() -> None:
     """The Main ETL function"""
-    color = "green"
-    year = 2020
+    color = "yellow"
+    year = 2021
     month = 1
     dataset_file = f"{color}_tripdata_{year}-{month:02}"
     dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{color}/{dataset_file}.csv.gz"
 
     df = fetch(dataset_url)
-    df_clean = clean(df)
+
+    # For the Green trip data
+    # df_clean = clean(df, "lpep_pickup_datetime", "lpep_dropoff_datetime")
+
+    # For the Yellow trip data
+    df_clean = clean(df, "tpep_pickup_datetime", "tpep_dropoff_datetime")
+
     path = write_local(df_clean, color, dataset_file)
     write_gcs(path)
 
