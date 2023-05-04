@@ -26,6 +26,7 @@ def write_local(df: pd.DataFrame, color: str, dataset_file: str) -> Path:
 
     # Create a folder data/green in the working directory before running this code
     path = Path(f"data/{color}/{dataset_file}.parquet")
+
     df.to_parquet(path, compression="gzip")
     # Checking to see if the slashes are forward. Default is backwards in windows
     print(path.as_posix())
